@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "redwood",
+  "version": "1.0",
+  "description": "Redirect network requests for assets to test production services with local changes.",
+  "background": {
+    "service_worker": "service_worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "declarativeNetRequestFeedback",
+    "declarativeNetRequestWithHostAccess",
+    "webRequest"
+  ],
+  "host_permissions": ["*://*/*"],
+  "optional_host_permissions": ["*://*/*"],
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  },
+  "action": {
+    "default_title": "redwood",
+    "default_popup": "popup.html"
+  }
+}
