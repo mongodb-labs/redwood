@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
         const tabId = tabs[0].id
 
-        const writeLogs = logs => {
+        const writeLogs = (logs = {}) => {
             document.querySelector('ul').innerHTML =
                 Object.keys(logs)
                     .sort((a,b) => logs[a.order] > logs[b.order])
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .join('')
         }
 
-        chrome.storage.sync.get('logs', ({ logs }) => writeLogs(logs[tabId]))
+        chrome.storage.sync.get('logs', ({ logs }) => writeLogs(logs?.[tabId]))
 
         chrome.storage.onChanged.addListener(function(changes) {
             const logs = changes.logs.newValue

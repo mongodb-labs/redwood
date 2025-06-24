@@ -8,5 +8,9 @@ Redirect network requests for assets to test production services with local chan
 1. Click `Load unpacked extension`.
 1. Choose the cloned repo.
 
+## Development
+
+You can optionally run `npm install` to get the type definitions for "chrome" APIs.
+
 ## Attribution
 Originally forked from https://github.com/jjgonecrypto/chrome-envious (MIT LICENSE)

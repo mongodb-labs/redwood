@@ -19,6 +19,11 @@ chrome.storage.sync
     const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.[a-fA-F0-9]+\\..*$`
     const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\..*$`
 
+    // Sourcemap regex patterns
+    const genSourcemapRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([^/]*)\\.[a-fA-F0-9]+\\.(js|css)\\.map$`;
+    const appAssetSourcemapRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.[a-fA-F0-9]+\\.(js|css)\\.map$`
+    const appAssetNoHashSourcemapRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.(.+)\\.map$`
+
     const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
     const oldRuleIds = oldRules.map((rule) => rule.id);
 
@@ -43,6 +48,21 @@ chrome.storage.sync
       // min will show up in group 3, if needed.
       return `${selectURLForRegexSub(type)}/static/\\1/\\2/\\3.${type}`
     }
+
+    // Sourcemap substitution functions
+    const makeGenSourcemapRegexSub = () => {
+      const baseURL = isWDS ? likelyWebServerURL : replace;
+      return `${baseURL}/static/\\1/\\2${addMin('\\4')}.\\4.map`
+    }
+    const makeAppAssetSourcemapRegexSub = () => {
+      const baseURL = isWDS ? likelyWebServerURL : replace;
+      return `${baseURL}/static/\\1/\\2/\\3${addMin('\\4')}.\\4.map`
+    }
+    const makeAppAssetNoHashSourcemapRegexSub = () => {
+      const baseURL = isWDS ? likelyWebServerURL : replace;
+      return `${baseURL}/static/\\1/\\2/\\3.\\4.map`
+    }
+
     const cssAssetRegexSub = `${replace}/static/assets/css/\\1${addMin('css')}.css`
 
     chrome.declarativeNetRequest.updateDynamicRules({
@@ -112,6 +132,47 @@ chrome.storage.sync
           condition: {
             urlFilter: isWDS ? likelyWebServerURL : replace,
             resourceTypes: ["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", "webtransport", "webbundle", "other"],
+          },
+        },
+
+        // Sourcemap redirects
+        {
+          id: 6,
+          action: {
+            type: "redirect",
+            redirect: {
+              regexSubstitution: makeGenSourcemapRegexSub(),
+            },
+          },
+          condition: {
+            regexFilter: genSourcemapRegex,
+            resourceTypes: ["other"],
+          },
+        },
+        {
+          id: 7,
+          action: {
+            type: "redirect",
+            redirect: {
+              regexSubstitution: makeAppAssetSourcemapRegexSub(),
+            },
+          },
+          condition: {
+            regexFilter: appAssetSourcemapRegex,
+            resourceTypes: ["other"],
+          },
+        },
+        {
+          id: 8,
+          action: {
+            type: "redirect",
+            redirect: {
+              regexSubstitution: makeAppAssetNoHashSourcemapRegexSub(),
+            },
+          },
+          condition: {
+            regexFilter: appAssetNoHashSourcemapRegex,
+            resourceTypes: ["other"],
           },
         },
       ],

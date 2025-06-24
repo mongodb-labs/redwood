@@ -1,0 +1,10 @@
+{
+  "name": "redwood",
+  "version": "0.0.0",
+  "description": "Redirect network requests for assets to test production services with local changes.",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.0.326"
+  }
+}
