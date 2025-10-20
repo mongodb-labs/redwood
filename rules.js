@@ -88,7 +88,7 @@ export function createRules({ match, replace, wds, webServerPort, compressed }) 
       '[orig_url]/static/[segment]/[segment]/[name].js',
       '[repl_url]/static/[segment]/[segment]/[name][min].js',
       false,
-      ['script']
+      ['script', 'other']
     ),
     // CSS chunks with single segment
     createRedirectRule(
