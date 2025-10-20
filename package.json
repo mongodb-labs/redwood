@@ -1,0 +1,17 @@
+{
+  "name": "redwood",
+  "version": "1.0.0",
+  "description": "Redirect network requests for assets to test production services with local changes.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "test:watch": "node --test --watch"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.270",
+    "@types/node": "^24.8.1",
+    "prettier": "^3.6.2"
+  }
+}
+
