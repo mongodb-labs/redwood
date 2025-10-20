@@ -69,6 +69,13 @@ export function createRules({ match, replace, wds, webServerPort, compressed }) 
   }
 
   return [
+    // HMR updates
+    createRedirectRule(
+      '[orig_url]/static/[segment]/[name].[hash].hot-update.[ext]',
+      '[repl_url]/static/[segment]/[name].[hash].hot-update.[ext]',
+      true,
+      ['script', 'stylesheet', 'other', 'xmlhttprequest']
+    ),
     // JS chunks
     createRedirectRule(
       '[orig_url]/static/[segment]/[name].[hash].js',
