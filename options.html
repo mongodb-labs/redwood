@@ -1,27 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>redwood</title>
-    <style>
-        body { padding: 10px; }
-        label { display: block; margin-bottom: 5px;  }
-        label > span { display: inline-block; font-weight: bold; min-width: 120px; padding-right: 10px; text-align: right; }
-        label > input { width: 210px; }
-        footer { margin-top: 20px; text-align: center; }
-        button { cursor: pointer; }
-    </style>
-    <script src="options.js"></script>
+  <title>redwood</title>
+  <style>
+    body {
+      padding: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    label > span {
+      display: inline-block;
+      font-weight: bold;
+      min-width: 120px;
+      padding-right: 10px;
+    }
+
+    label > input[type='text'] {
+      width: 400px;
+    }
+
+    footer {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      cursor: pointer;
+    }
+  </style>
+  <script src="options.js"></script>
 </head>
 <body>
-    <main>
-        <label><span>Match URL prefix</span><input name="match"></label>
-        <label><span>Replace URL prefix</span><input name="replace"></label>
-        <label><span>Webpack Dev Server?</span><input name="wds"></label>
-        <label><span>Web Server Port (if using wds)</span><input name="webServerPort"></label>
-        <label><span>Compressed?</span><input name="compressed"></label>
-        <footer>
-            <button name="save">Save</button>
-        </footer>
-    </main>
+<main>
+  <div>
+    <span>MongoCDN Presets:</span>
+    <input type="button" name="preset" value="Development"/>
+    <input type="button" name="preset" value="QA"/>
+    <input type="button" name="preset" value="Production"/>
+  </div>
+  <br/>
+  <label for="match">
+    <span>Match URL prefix</span>
+    <input type="text" name="match" id="match">
+  </label>
+  <br/>
+  <label for="replace">
+    <span>Replace URL prefix</span>
+    <input type="text" name="replace" id="replace">
+  </label>
+  <br/>
+  <label for="wds">
+    <input type="checkbox" name="wds" id="wds" value="true">
+    <span>Webpack Dev Server?</span>
+  </label>
+  <br/>
+  <label for="webServerPort">
+    <span>Web Server Port (if using Webpack Dev Server)</span>
+    <input type="text" name="webServerPort" id="webServerPort">
+  </label>
+  <br/>
+  <label for="compressed">
+    <input type="checkbox" name="compressed" id="compressed" value="true">
+    <span>Compressed?</span>
+  </label>
+  <footer>
+    <button type="button" name="save">Save</button>
+  </footer>
+</main>
 </body>
 </html>
