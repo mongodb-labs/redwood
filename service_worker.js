@@ -2,11 +2,10 @@ import { createRules } from './rules.js';
 
 chrome.storage.sync
   .get({
-    match: 'https://my-source.com',
-    replace: 'http://localhost:8080',
-    wds: true,
-    webServerPort: 8080,
-    compressed: false,
+    redirectMongoCdnDevelopment: true,
+    redirectMongoCdnQa: false,
+    redirectMongoCdnProduction: false,
+    localAssetsUrl: 'http://localhost:8081',
   })
   .then(async (config) => {
     // Uncomment for seeing matches (not a lot of info).

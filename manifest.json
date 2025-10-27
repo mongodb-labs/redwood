@@ -13,8 +13,7 @@
     "declarativeNetRequestWithHostAccess",
     "webRequest"
   ],
-  "host_permissions": ["*://*/*"],
-  "optional_host_permissions": ["*://*/*"],
+  "host_permissions": ["*://*/*"],  
   "options_ui": {
     "page": "options.html",
     "browser_style": true

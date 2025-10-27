@@ -1,5 +1,5 @@
-import { createRules } from './rules.js';
-import { describe, test } from 'node:test';
+import {createRules} from './rules.js';
+import {describe, test} from 'node:test';
 import assert from 'node:assert';
 
 /**
@@ -28,11 +28,8 @@ function testRedirect(rules, originalUrl) {
 
 describe('DEV redirections', () => {
   const rules = createRules({
-    match: 'https://assets-dev.mongodb-cdn.com/mms',
-    replace: 'http://localhost:8081',
-    wds: 'true',
-    webServerPort: 8081,
-    compressed: 'false',
+    redirectMongoCdnDevelopment: true,
+    localAssetsUrl: 'http://localhost:8081',
   });
 
   test('CSS chunk with hash should redirect to minified version', () => {

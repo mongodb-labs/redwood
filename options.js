@@ -1,48 +1,18 @@
 setInputs = (items) => {
-  document.querySelector('input[name=match]').value = items.match;
-  document.querySelector('input[name=replace]').value = items.replace;
-  document.querySelector('input[name=wds]').checked = items.wds;
-  document.querySelector('input[name=webServerPort]').value = items.webServerPort;
-  document.querySelector('input[name=compressed]').checked = items.compressed;
-};
-
-setPreset = (event) => {
-  const presets = {
-    Development: {
-      match: 'https://assets-dev.mongodb-cdn.com/mms',
-      replace: 'http://localhost:8081',
-      wds: true,
-      webServerPort: 8081,
-      compressed: false,
-    },
-    QA: {
-      match: 'https://assets-qa.mongodb-cdn.com/mms',
-      replace: 'http://localhost:8081',
-      wds: true,
-      webServerPort: 8081,
-      compressed: false,
-    },
-    Production: {
-      match: 'https://assets.mongodb-cdn.com/mms',
-      replace: 'http://localhost:8081',
-      wds: true,
-      webServerPort: 8081,
-      compressed: false,
-    },
-  };
-
-  setInputs(presets[event.target.value]);
+  document.querySelector('input[name=redirect-mongo-cdn-development]').checked = items.redirectMongoCdnDevelopment;
+  document.querySelector('input[name=redirect-mongo-cdn-qa]').checked = items.redirectMongoCdnQa;
+  document.querySelector('input[name=redirect-mongo-cdn-production]').checked = items.redirectMongoCdnProduction;
+  document.querySelector('input[name=local-assets-url]').value = items.localAssetsUrl;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   // Use default value color = 'red' and likesColor = true.
   chrome.storage.sync.get(
     {
-      match: 'https://example.com',
-      replace: 'http://127.0.0.1:80',
-      wds: true,
-      webServerPort: 8080,
-      compressed: false,
+      redirectMongoCdnDevelopment: true,
+      redirectMongoCdnQa: false,
+      redirectMongoCdnProduction: false,
+      localAssetsUrl: 'http://localhost:8081',
     },
     (items) => {
       setInputs(items);
@@ -52,18 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const getInput = (name) => document.querySelector(`input[name=${name}]`).value;
   const getCheckbox = (name) => document.querySelector(`input[name=${name}]`).checked;
 
-  document.querySelectorAll('input[name=preset]').forEach((button) => {
-    button.addEventListener('click', setPreset);
-  });
-
   document.querySelector('button[name=save]').addEventListener('click', () => {
     chrome.storage.sync.set(
       {
-        match: getInput('match'),
-        replace: getInput('replace'),
-        wds: getCheckbox('wds'),
-        webServerPort: getInput('webServerPort'),
-        compressed: getCheckbox('compressed'),
+        redirectMongoCdnDevelopment: getCheckbox('redirect-mongo-cdn-development'),
+        redirectMongoCdnQa: getCheckbox('redirect-mongo-cdn-qa'),
+        redirectMongoCdnProduction: getCheckbox('redirect-mongo-cdn-production'),
+        localAssetsUrl: getInput('local-assets-url'),
       },
       chrome.runtime.reload
     );

@@ -9,7 +9,6 @@
 
     label {
       display: block;
-      margin-bottom: 5px;
     }
 
     label > span {
@@ -37,35 +36,15 @@
 <body>
 <main>
   <div>
-    <span>MongoCDN Presets:</span>
-    <input type="button" name="preset" value="Development"/>
-    <input type="button" name="preset" value="QA"/>
-    <input type="button" name="preset" value="Production"/>
+    <span>Redirect MongoCDN assets from:</span>
+    <label><input type="checkbox" name="redirect-mongo-cdn-development" value="Development"/> Development</label>
+    <label><input type="checkbox" name="redirect-mongo-cdn-qa" value="QA"/> QA</label>
+    <label><input type="checkbox" name="redirect-mongo-cdn-production" value="Production"/> Production</label>
   </div>
   <br/>
-  <label for="match">
-    <span>Match URL prefix</span>
-    <input type="text" name="match" id="match">
-  </label>
-  <br/>
-  <label for="replace">
-    <span>Replace URL prefix</span>
-    <input type="text" name="replace" id="replace">
-  </label>
-  <br/>
-  <label for="wds">
-    <input type="checkbox" name="wds" id="wds" value="true">
-    <span>Webpack Dev Server?</span>
-  </label>
-  <br/>
-  <label for="webServerPort">
-    <span>Web Server Port (if using Webpack Dev Server)</span>
-    <input type="text" name="webServerPort" id="webServerPort">
-  </label>
-  <br/>
-  <label for="compressed">
-    <input type="checkbox" name="compressed" id="compressed" value="true">
-    <span>Compressed?</span>
+  <label>
+    <span>To local assets URL:</span>
+    <input type="text" name="local-assets-url" id="local-assets-url">
   </label>
   <footer>
     <button type="button" name="save">Save</button>
