@@ -8,7 +8,6 @@ chrome.storage.sync
     localAssetsUrl: 'http://localhost:8081',
   })
   .then(async (config) => {
-    // Uncomment for seeing matches (not a lot of info).
     chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
       console.log(JSON.stringify(info));
     });
