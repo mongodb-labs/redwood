@@ -2,28 +2,18 @@
 <html>
 <head>
     <title>Redwood</title>
-    <style>
-        html { padding: 0; }
-        h1 { margin: 0; padding: 10px; color: white; }
-        h1.active { background-color: green; }
-        h1.inactive { background-color: #999; }
-        p { color: #999; }
-        .js-replace, .js-match { color: black; }
-        main { min-width: 300px; }
-        ul { margin: 0; padding-left: 1em; }
-    </style>
     <script src="vendor/tailwind.js"></script>
     <script src="popup.js"></script>
 </head>
-<body>
-    <h1 class="js-heading active">Redwood is running</h1>
-    <main class="p-3">
-        <p>Matching requests from <br /><var class="js-match"></var></p>
-        <p>and replacing with <br /><var class="js-replace"></var></p>
-        <p>Replaced artifacts:</p>
-        <ul></ul>
+<body class="p-0">
+    <h1 class="js-heading m-0 px-3 py-2 text-white bg-gray-400 data-[active]:bg-green-700" data-active>Redwood is running</h1>
+    <main class="p-3 min-w-[300px]">
+        <p class="text-gray-400">Matching requests from <br /><var class="js-match text-black"></var></p>
+        <p class="text-gray-400">and replacing with <br /><var class="js-replace text-black"></var></p>
+        <p class="text-gray-400">Replaced artifacts:</p>
+        <ul class="m-0 pl-4"></ul>
         <div class="mt-3">
-            <button id="toggle-btn" class="px-3 py-1 text-sm rounded text-white bg-red-500 hover:bg-red-600">Disable</button>
+            <button id="toggle-btn" class="px-3 py-1 text-sm rounded text-white bg-green-600 hover:bg-green-700 data-[active]:bg-red-500 data-[active]:hover:bg-red-600" data-active>Disable</button>
         </div>
     </main>
 </body>

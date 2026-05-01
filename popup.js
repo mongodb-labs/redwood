@@ -43,15 +43,9 @@ function applyActiveState(isActive) {
     const heading = document.querySelector('.js-heading');
     const btn = document.getElementById('toggle-btn');
 
-    if (isActive) {
-        heading.textContent = 'Redwood is running';
-        heading.className = 'js-heading active';
-        btn.textContent = 'Disable';
-        btn.className = 'px-3 py-1 text-sm rounded text-white bg-red-500 hover:bg-red-600';
-    } else {
-        heading.textContent = 'Redwood is paused';
-        heading.className = 'js-heading inactive';
-        btn.textContent = 'Enable';
-        btn.className = 'px-3 py-1 text-sm rounded text-white bg-green-600 hover:bg-green-700';
-    }
+    heading.toggleAttribute('data-active', isActive);
+    heading.textContent = isActive ? 'Redwood is running' : 'Redwood is paused';
+
+    btn.toggleAttribute('data-active', isActive);
+    btn.textContent = isActive ? 'Disable' : 'Enable';
 }
