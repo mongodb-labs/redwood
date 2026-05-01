@@ -1,119 +1,101 @@
-chrome.storage.sync
-  .get({
-    match: "https://my-source.com",
-    replace: "http://localhost:8080",
-    wds: true,
-    webServerPort: 8080,
-    compressed: false
-  })
-  .then(async ({ match, replace, wds, webServerPort, compressed }) => {
-    const replaceURL = new URL(replace);
-    const likelyWebServerURL = `${replaceURL.protocol}//${replaceURL.hostname}:${webServerPort}`;
+const DEFAULTS = {
+  match: "https://my-source.com",
+  replace: "http://localhost:8080",
+  wds: true,
+  webServerPort: 8080,
+  compressed: false,
+  isActive: true,
+};
 
-    const isWDS = wds === "true";
-    const isCompressed = compressed === "true";
-    const matchForRegex = match.replaceAll(/\./g, '\\.');
-    const likelyWebServerURLForRegex = likelyWebServerURL.replaceAll(/\./g, '\\.');
+async function updateRules(settings) {
+  const { match, replace, wds, webServerPort, compressed, isActive } = settings;
 
-    const genRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([^/]*)\\.[a-fA-F0-9]+\\..*$`;
-    const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.[a-fA-F0-9]+\\..*$`
-    const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\..*$`
+  const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
+  const oldRuleIds = oldRules.map((rule) => rule.id);
 
-    const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
-    const oldRuleIds = oldRules.map((rule) => rule.id);
-
-    // Uncomment for seeing matches (not a lot of info).
-    // chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((info) => {
-    //   console.log(JSON.stringify(info))
-    // })
-
-    const addMin = (type) => {
-      return isCompressed ? '.min' : '';
-    }
-    const selectURLForRegexSub = (type) => {
-      return (isWDS && type === 'css') ? likelyWebServerURL : replace;
-    }
-    const makeGenAssetRegexSub = (type) => {
-      return `${selectURLForRegexSub(type)}/static/\\1/\\2${addMin(type)}.${type}`
-    }
-    const makeAppAssetRegexSub = (type) => {
-      return `${selectURLForRegexSub(type)}/static/\\1/\\2/\\3${addMin(type)}.${type}`
-    }
-    const makeAppAssetNoHashRegexSub = (type) => {
-      // min will show up in group 3, if needed.
-      return `${selectURLForRegexSub(type)}/static/\\1/\\2/\\3.${type}`
-    }
-    const cssAssetRegexSub = `${replace}/static/assets/css/\\1${addMin('css')}.css`
-
-    chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: oldRuleIds,
-      addRules: [
-        // JS
-        {
-          id: 1,
-          action: {
-            type: "redirect",
-            "redirect": { regexSubstitution: makeGenAssetRegexSub('js'), }
-          },
-          "condition": {
-            regexFilter: genRegex,
-            "resourceTypes": ["script"]
-          }
-        },
-        // JS chunk redirected-to hashes
-        {
-          id: 2,
-          action: {
-            type: "redirect",
-            "redirect": { regexSubstitution: makeAppAssetNoHashRegexSub('js'), }
-          },
-          "condition": {
-            regexFilter: appAssetNoHashRegex,
-            "resourceTypes": ["script"]
-          }
-        },
-
-        // CSS
-        {
-          id: 3,
-          action: {
-            type: "redirect",
-            redirect: {
-              regexSubstitution: makeGenAssetRegexSub('css'),
-            },
-          },
-          condition: {
-            regexFilter: genRegex,
-            resourceTypes: ["stylesheet"],
-          },
-        },
-        {
-          id: 4,
-          action: {
-            type: "redirect",
-            redirect: {
-              regexSubstitution: makeAppAssetRegexSub('css'),
-            },
-          },
-          condition: {
-            regexFilter: appAssetRegex,
-            resourceTypes: ["stylesheet"],
-          },
-        },
-        {
-          id: 5,
-          action: {
-            type: "modifyHeaders",
-            responseHeaders: [
-              { header: "Access-Control-Allow-Origin", operation: "set", value: "*" },
-              { header: "Access-Control-Allow-Headers", operation: "set", value: "*" },
-            ],
-          },
-          condition: {
-            urlFilter: isWDS ? likelyWebServerURL : replace,
-            resourceTypes: ["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", "webtransport", "webbundle", "other"],
-          },
-        },
-      ],
+  if (!isActive) {
+    await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: oldRuleIds, addRules: [] });
+    chrome.action.setIcon({
+      path: {
+        16: "icons/redwood-off-16.png",
+        32: "icons/redwood-off-32.png",
+        48: "icons/redwood-off-48.png",
+        128: "icons/redwood-off.png",
+      },
     });
+    return;
+  }
+
+  const replaceURL = new URL(replace);
+  const likelyWebServerURL = `${replaceURL.protocol}//${replaceURL.hostname}:${webServerPort}`;
+
+  const isWDS = wds === "true";
+  const isCompressed = compressed === "true";
+  const matchForRegex = match.replaceAll(/\./g, '\\.');
+  const likelyWebServerURLForRegex = likelyWebServerURL.replaceAll(/\./g, '\\.');
+
+  const genRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([^/]*)\\.[a-fA-F0-9]+\\..*$`;
+  const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.[a-fA-F0-9]+\\..*$`;
+  const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\..*$`;
+
+  const addMin = () => isCompressed ? '.min' : '';
+  const selectURLForRegexSub = (type) => (isWDS && type === 'css') ? likelyWebServerURL : replace;
+  const makeGenAssetRegexSub = (type) => `${selectURLForRegexSub(type)}/static/\\1/\\2${addMin()}.${type}`;
+  const makeAppAssetRegexSub = (type) => `${selectURLForRegexSub(type)}/static/\\1/\\2/\\3${addMin()}.${type}`;
+  const makeAppAssetNoHashRegexSub = (type) => `${selectURLForRegexSub(type)}/static/\\1/\\2/\\3.${type}`;
+
+  await chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: oldRuleIds,
+    addRules: [
+      {
+        id: 1,
+        action: { type: "redirect", redirect: { regexSubstitution: makeGenAssetRegexSub('js') } },
+        condition: { regexFilter: genRegex, resourceTypes: ["script"] },
+      },
+      {
+        id: 2,
+        action: { type: "redirect", redirect: { regexSubstitution: makeAppAssetNoHashRegexSub('js') } },
+        condition: { regexFilter: appAssetNoHashRegex, resourceTypes: ["script"] },
+      },
+      {
+        id: 3,
+        action: { type: "redirect", redirect: { regexSubstitution: makeGenAssetRegexSub('css') } },
+        condition: { regexFilter: genRegex, resourceTypes: ["stylesheet"] },
+      },
+      {
+        id: 4,
+        action: { type: "redirect", redirect: { regexSubstitution: makeAppAssetRegexSub('css') } },
+        condition: { regexFilter: appAssetRegex, resourceTypes: ["stylesheet"] },
+      },
+      {
+        id: 5,
+        action: {
+          type: "modifyHeaders",
+          responseHeaders: [
+            { header: "Access-Control-Allow-Origin", operation: "set", value: "*" },
+            { header: "Access-Control-Allow-Headers", operation: "set", value: "*" },
+          ],
+        },
+        condition: {
+          urlFilter: isWDS ? likelyWebServerURL : replace,
+          resourceTypes: ["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", "webtransport", "webbundle", "other"],
+        },
+      },
+    ],
   });
+
+  chrome.action.setIcon({
+    path: {
+      16: "icons/redwood-on-16.png",
+      32: "icons/redwood-on-32.png",
+      48: "icons/redwood-on-48.png",
+      128: "icons/redwood-on.png",
+    },
+  });
+}
+
+chrome.storage.sync.get(DEFAULTS).then(updateRules);
+
+chrome.storage.onChanged.addListener(() => {
+  chrome.storage.sync.get(DEFAULTS).then(updateRules);
+});
