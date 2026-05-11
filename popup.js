@@ -44,7 +44,7 @@ function applyActiveState(isActive) {
     const btn = document.getElementById('toggle-btn');
 
     heading.toggleAttribute('data-active', isActive);
-    heading.textContent = isActive ? 'Redwood is running' : 'Redwood is paused';
+    heading.textContent = isActive ? '▶️ Redwood is running' : '⏹️ Redwood is paused';
 
     btn.toggleAttribute('data-active', isActive);
     btn.textContent = isActive ? 'Disable' : 'Enable';
