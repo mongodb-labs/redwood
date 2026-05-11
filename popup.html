@@ -2,19 +2,21 @@
 <html>
 <head>
     <title>Redwood</title>
-    <script src="vendor/tailwind.js"></script>
+    <link rel="stylesheet" href="styles.css">
     <script src="popup.js"></script>
 </head>
 <body class="p-0">
-    <h1 class="js-heading m-0 px-3 py-2 text-white bg-gray-400 data-[active]:bg-green-700" data-active>Redwood is running</h1>
-    <main class="p-3 min-w-[300px]">
-        <p class="text-gray-400">Matching requests from <br /><var class="js-match text-black"></var></p>
-        <p class="text-gray-400">and replacing with <br /><var class="js-replace text-black"></var></p>
-        <p class="text-gray-400">Replaced artifacts:</p>
-        <ul class="m-0 pl-4"></ul>
-        <div class="mt-3">
-            <button id="toggle-btn" class="px-3 py-1 text-sm rounded text-white bg-green-600 hover:bg-green-700 data-[active]:bg-red-500 data-[active]:hover:bg-red-600" data-active>Disable</button>
-        </div>
-    </main>
+    <div class="bg-dark-background-primary font-body">
+        <h1 class="js-heading m-0 px-300 py-200 text-heading4 font-semibold text-dark-text-primary bg-gray-dark2 data-[active]:bg-dark-background-success" data-active>Redwood is running</h1>
+        <main class="p-300 min-w-[300px]">
+            <p class="text-base text-dark-text-primary">Matching requests from <br /><var class="js-match font-monospace text-small text-dark-text-primary"></var></p>
+            <p class="text-base text-dark-text-primary">and replacing with <br /><var class="js-replace font-monospace text-small text-dark-text-primary"></var></p>
+            <p class="text-base text-dark-text-primary">Replaced artifacts:</p>
+            <ul class="m-0 pl-400"></ul>
+            <div class="mt-300">
+                <button id="toggle-btn" class="px-300 py-100 text-small rounded-100 text-white bg-green-dark1 hover:bg-green-dark2 data-[active]:bg-red-base data-[active]:hover:bg-red-dark2" data-active>Disable</button>
+            </div>
+        </main>
+    </div>
 </body>
 </html>

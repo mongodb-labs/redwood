@@ -1,0 +1,23 @@
+{
+  "name": "redwood",
+  "version": "1.0.0",
+  "description": "Redirect network requests for assets to test production services with local changes.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mongodb-labs/redwood.git"
+  },
+  "license": "ISC",
+  "scripts": {
+    "build": "postcss src/styles.css -o styles.css",
+    "watch": "postcss src/styles.css -o styles.css --watch"
+  },
+  "dependencies": {
+    "@via-ds/tokens": "^0.0.1-canary.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "postcss": "^8.5.14",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.3.0"
+  }
+}
