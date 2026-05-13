@@ -23,8 +23,8 @@ function syncEnvUi(items) {
 
     const matchEl = document.querySelector('var.js-match');
     const replaceEl = document.querySelector('var.js-replace');
-    matchEl.textContent = MATCH_ENVIRONMENTS[idx].match;
-    replaceEl.textContent = items.replace;
+    if (matchEl) matchEl.textContent = MATCH_ENVIRONMENTS[idx].match;
+    if (replaceEl) replaceEl.textContent = items.replace;
 }
 
 function readSyncSettings(callback) {

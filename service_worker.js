@@ -43,11 +43,10 @@ async function updateRules(rawSettings) {
   const isWDS = wds === "true";
   const isCompressed = compressed === "true";
   const matchForRegex = match.replaceAll(/\./g, '\\.');
-  const likelyWebServerURLForRegex = likelyWebServerURL.replaceAll(/\./g, '\\.');
 
   const genRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([^/]*)\\.[a-fA-F0-9]+\\..*$`;
-  const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.[a-fA-F0-9]+\\..*$`;
-  const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\..*$`;
+  const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/([^/]+)\\.[a-fA-F0-9]+\\..*$`;
+  const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/([^/]+)\\..*$`;
 
   const addMin = () => isCompressed ? '.min' : '';
   const selectURLForRegexSub = (type) => (isWDS && type === 'css') ? likelyWebServerURL : replace;
