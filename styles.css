@@ -441,7 +441,7 @@
   }
   .data-\[active\]\:bg-dark-background-success {
     &[data-active] {
-      background-color: var(--color-dark-background-success);
+      background-color: var(--color-green-dark2);
     }
   }
   .data-\[active\]\:bg-red-base {
