@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (changes.logs) {
                 writeLogs(changes.logs.newValue[tabId]);
             }
+            // changes.isActive is a StorageChange object ({oldValue, newValue}), or absent (undefined) if isActive didn't change
             if (changes.isActive) {
                 applyActiveState(changes.isActive.newValue);
             }
