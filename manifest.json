@@ -9,7 +9,6 @@
   },
   "permissions": [
     "storage",
-    "declarativeNetRequestFeedback",
     "declarativeNetRequestWithHostAccess",
     "webRequest"
   ],

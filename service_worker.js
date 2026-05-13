@@ -1,5 +1,8 @@
+import { MATCH_ENVIRONMENTS, DEFAULT_ENVIRONMENT } from './matchEnvironments.js';
+
 const DEFAULTS = {
-  match: "https://my-source.com",
+  match: DEFAULT_ENVIRONMENT.match,
+  environmentIndex: 0,
   replace: "http://localhost:8080",
   wds: true,
   webServerPort: 8080,
@@ -7,7 +10,15 @@ const DEFAULTS = {
   isActive: true,
 };
 
-async function updateRules(settings) {
+function resolveEnvironmentMatch(settings) {
+  let idx = Number(settings.environmentIndex);
+  if (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length) idx = 0;
+  const match = MATCH_ENVIRONMENTS[idx].match;
+  return { ...settings, environmentIndex: idx, match };
+}
+
+async function updateRules(rawSettings) {
+  const settings = resolveEnvironmentMatch(rawSettings);
   const { match, replace, wds, webServerPort, compressed, isActive } = settings;
 
   const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
@@ -94,8 +105,8 @@ async function updateRules(settings) {
   });
 }
 
-chrome.storage.sync.get(DEFAULTS).then(updateRules);
+chrome.storage.sync.get(null).then((items) => updateRules({ ...DEFAULTS, ...items }));
 
 chrome.storage.onChanged.addListener(() => {
-  chrome.storage.sync.get(DEFAULTS).then(updateRules);
+  chrome.storage.sync.get(null).then((items) => updateRules({ ...DEFAULTS, ...items }));
 });
