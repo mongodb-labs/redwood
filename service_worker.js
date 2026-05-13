@@ -12,6 +12,13 @@ const DEFAULTS = {
 
 function resolveEnvironmentMatch(settings) {
   let idx = Number(settings.environmentIndex);
+
+  // Handle custom URL case (idx = -1)
+  if (idx === -1) {
+    const match = settings.customUrl || settings.match || MATCH_ENVIRONMENTS[0].match;
+    return { ...settings, environmentIndex: idx, match };
+  }
+
   if (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length) idx = 0;
   const match = MATCH_ENVIRONMENTS[idx].match;
   return { ...settings, environmentIndex: idx, match };
