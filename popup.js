@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chrome.storage.onChanged.addListener(function (changes, areaName) {
         if (areaName === 'sync') {
+            // changes.isActive is a StorageChange object ({oldValue, newValue}), or absent (undefined) if isActive didn't change
             if (changes.isActive) {
                 applyActiveState(changes.isActive.newValue);
             }

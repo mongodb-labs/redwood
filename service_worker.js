@@ -111,8 +111,8 @@ async function updateRules(rawSettings) {
   });
 }
 
-chrome.storage.sync.get(null).then((items) => updateRules({ ...DEFAULTS, ...items }));
+chrome.storage.sync.get(null).then((settings) => updateRules({ ...DEFAULTS, ...settings }));
 
 chrome.storage.onChanged.addListener(() => {
-  chrome.storage.sync.get(null).then((items) => updateRules({ ...DEFAULTS, ...items }));
+  chrome.storage.sync.get(null).then((settings) => updateRules({ ...DEFAULTS, ...settings }));
 });
