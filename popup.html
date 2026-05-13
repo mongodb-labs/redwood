@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>redwood</title>
-    <style>
-        html { padding: 0; }
-        h1 { margin: 0; padding: 10px; background-color: green; color: white; }
-        p { color: #999; }
-        .js-replace, .js-match { color: black; }
-        main { min-width: 300px; }
-        ul { margin: 0; padding-left: 1em; }
-    </style>
+    <meta charset="utf-8">
+    <title>Redwood</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="popup.js"></script>
 </head>
-<body>
-    <h1>redwood is running</h1>
-    <main>
-        <p>Matching requests from <br /><var class="js-match"></var></p>
-        <p>and replacing with <br /><var class="js-replace"></var></p>
-        <p>Replaced artifacts:</p>
-        <ul></ul>
-    </main>
+<body class="p-0">
+    <div class="bg-dark-background-primary font-body">
+        <h1 class="js-heading m-0 px-300 py-200 text-heading4 font-semibold text-dark-text-primary bg-gray-dark2 data-[active]:bg-dark-background-success" data-active>▶️ Redwood is running</h1>
+        <main class="p-300 min-w-[300px]">
+            <p class="text-base text-dark-text-primary">Matching requests from <br /><var class="js-match font-monospace text-small text-dark-text-primary"></var></p>
+            <p class="text-base text-dark-text-primary">and replacing with <br /><var class="js-replace font-monospace text-small text-dark-text-primary"></var></p>
+            <p class="text-base text-dark-text-primary">Replaced artifacts:</p>
+            <ul class="m-0 pl-400"></ul>
+            <div class="mt-300">
+                <button id="toggle-btn" class="px-300 py-100 text-small rounded-100 text-white bg-green-dark1 hover:bg-green-dark2 data-[active]:bg-red-base data-[active]:hover:bg-red-dark2" data-active>Disable</button>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
