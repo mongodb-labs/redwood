@@ -67,7 +67,6 @@
     --default-mono-font-family: var(--font-mono);
     --radius-100: 4px;
     --color-dark-background-primary: #001e2b;
-    --color-dark-background-success: #1f784b;
     --color-dark-text-primary: #e8edeb;
     --color-light-background-primary: #ffffff;
     --color-light-border-primary: #889397;
@@ -264,6 +263,9 @@
   .mb-300 {
     margin-bottom: var(--spacing-300);
   }
+  .mb-600 {
+    margin-bottom: var(--spacing-600);
+  }
   .block {
     display: block;
   }
@@ -284,6 +286,9 @@
   }
   .w-\[420px\] {
     width: 420px;
+  }
+  .w-\[500px\] {
+    width: 500px;
   }
   .min-w-\[120px\] {
     min-width: 120px;
@@ -322,11 +327,18 @@
   .bg-light-background-primary {
     background-color: var(--color-light-background-primary);
   }
+  .bg-green-dark2 {
+    background-color: var(--color-green-dark2);
+  }
   .p-0 {
     padding: calc(var(--spacing) * 0);
   }
   .p-300 {
     padding: var(--spacing-300);
+  }
+  .px-\[32px\] {
+    padding-left: 32px;
+    padding-right: 32px;
   }
   .px-200 {
     padding-inline: var(--spacing-200);
@@ -336,6 +348,10 @@
   }
   .px-400 {
     padding-inline: var(--spacing-400);
+  }
+  .py-\[12px\] {
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
   .py-100 {
     padding-block: var(--spacing-100);
@@ -351,6 +367,9 @@
   }
   .pl-\[120px\] {
     padding-left: 120px;
+  }
+  .mr-\[40px\] {
+    margin-right: 40px;
   }
   .text-center {
     text-align: center;
@@ -477,7 +496,7 @@
   display: inline-block;
   width: 40px;
   height: 24px;
-  margin-left: 8px;
+  margin-left: 16px;
 }
 
 .toggle-switch input {
@@ -511,7 +530,7 @@
 }
 
 input:checked + .toggle-slider {
-  background-color: var(--color-dark-background-success);
+  background-color: var(--color-green-dark2);
 }
 
 input:checked + .toggle-slider:before {
