@@ -10,25 +10,30 @@
     <div class="bg-dark-background-primary font-body">
         <h1 class="js-heading m-0 px-300 py-200 text-heading4 font-semibold text-dark-text-primary bg-gray-dark2 data-[active]:bg-dark-background-success" data-active>▶️ Redwood is running</h1>
         <main class="p-300 min-w-[300px]">
-            <div class="flex items-center">
-                <span class="text-base text-dark-text-primary font-semibold">Enable</span>
+            <div class="popup-row">
+                <span class="popup-label">Enable</span>
                 <label class="toggle-switch">
                     <input type="checkbox" id="toggle-switch">
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            
-            <label class="mb-200 block text-base text-dark-text-primary">
-                <span class="mb-100 block font-semibold">Environment</span>
-                 <select id="env-select" class="w-[300px] px-200 py-100 text-small rounded-100 font-monospace text-dark-text-primary bg-gray-dark2"></select>
-            </label>
-            <label class="mb-200 block text-base text-dark-text-primary" id="custom-url-container" style="display: none;">
-                <span class="mb-100 block font-semibold">Custom URL</span>
-                <input type="text" id="custom-url-input" placeholder="https://assets.example.com/mms" class="w-[300px] px-200 py-100 text-small rounded-100 font-monospace text-dark-text-primary bg-gray-dark2 border border-gray-dark1" />
-            </label>
-            <p class="text-base text-dark-text-primary font-semibold">Matching requests from <br /><var class="js-match font-monospace text-small text-dark-text-primary"></var></p>
-            <p class="text-base text-dark-text-primary font-semibold">and replacing with <br /><var class="js-replace font-monospace text-small text-dark-text-primary"></var></p>
-            <p id="server-status" class="text-base text-dark-text-primary font-semibold"></p>
+
+            <div class="popup-row">
+                <span class="popup-label">Environment</span>
+                <select id="env-select" class="w-[300px] px-200 py-100 rounded-100 font-monospace text-dark-text-primary bg-gray-dark2"></select>
+            </div>
+            <div class="popup-row hidden" id="custom-url-container">
+                <span class="popup-label">Custom URL</span>
+                <input type="text" id="custom-url-input" placeholder="https://assets.example.com/mms" class="w-[300px] px-200 py-100 rounded-100 font-monospace text-dark-text-primary bg-gray-dark2 border border-gray-dark1" />
+            </div>
+
+            <hr class="divider"/>
+
+            <p class="text-dark-text-primary">Matching requests from <br /><var class="js-match font-monospace text-small text-dark-text-primary"></var></p>
+            <p class="text-dark-text-primary" style="margin-top: 8px;">and replacing with <br /><var class="js-replace font-monospace text-small text-dark-text-primary"></var></p>
+
+            <hr class="divider hidden" id="server-status-divider"/>
+            <p id="popup-server-status" class="popup-text"></p>
         </main>
     </div>
 </body>

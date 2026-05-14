@@ -39,10 +39,10 @@ function syncEnvUi(settings) {
     const customContainer = document.getElementById('custom-url-container');
     const customInput = document.getElementById('custom-url-input');
     if (isCustom) {
-        customContainer.style.display = 'block';
+        customContainer.classList.remove('hidden');
         customInput.value = settings.customUrl || '';
     } else {
-        customContainer.style.display = 'none';
+        customContainer.classList.add('hidden');
     }
 
     const matchEl = document.querySelector('var.js-match');
@@ -75,10 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Check server status
         checkServerStatus(settings.replace).then(isRunning => {
-            const statusEl = document.getElementById('server-status');
+            const statusEl = document.getElementById('popup-server-status');
+            const dividerEl = document.getElementById('server-status-divider');
             if (statusEl && !isRunning) {
-                statusEl.textContent = 'Local server is not running.';
-                statusEl.className = 'server-status-error';
+                statusEl.textContent = '🚨 Local server is not running 🚨';
+                statusEl.className = 'popup-server-status-error popup-text';
+                dividerEl?.classList.remove('hidden');
             }
         });
     });
