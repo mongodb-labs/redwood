@@ -4,14 +4,14 @@ const CUSTOM_ENV_INDEX = -1;
 
 const POPUP_DEFAULTS = {
     match: MATCH_ENVIRONMENTS[0].match,
-    replace: 'http://127.0.0.1:80',
+    replace: 'http://localhost:8080',
     environmentIndex: 0,
     isActive: true,
     customUrl: '',
 };
 
-function syncEnvUi(items) {
-    let idx = Number(items.environmentIndex);
+function syncEnvUi(settings) {
+    let idx = Number(settings.environmentIndex);
     const isCustom = idx === CUSTOM_ENV_INDEX;
 
     if (!isCustom && (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length)) {
@@ -40,7 +40,7 @@ function syncEnvUi(items) {
     const customInput = document.getElementById('custom-url-input');
     if (isCustom) {
         customContainer.style.display = 'block';
-        customInput.value = items.customUrl || '';
+        customInput.value = settings.customUrl || '';
     } else {
         customContainer.style.display = 'none';
     }
@@ -48,21 +48,39 @@ function syncEnvUi(items) {
     const matchEl = document.querySelector('var.js-match');
     const replaceEl = document.querySelector('var.js-replace');
     if (matchEl) {
-        matchEl.textContent = isCustom ? items.customUrl : MATCH_ENVIRONMENTS[idx].match;
+        matchEl.textContent = isCustom ? settings.customUrl : MATCH_ENVIRONMENTS[idx].match;
     }
-    if (replaceEl) replaceEl.textContent = items.replace;
+    if (replaceEl) replaceEl.textContent = settings.replace;
 }
 
 function readSyncSettings(callback) {
-    chrome.storage.sync.get(null, (items) => {
-        callback({ ...POPUP_DEFAULTS, ...items });
+    chrome.storage.sync.get(null, (settings) => {
+        callback({ ...POPUP_DEFAULTS, ...settings });
     });
 }
 
+async function checkServerStatus(url) {
+    try {
+        await fetch(url, { method: 'HEAD', mode: 'no-cors' });
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    readSyncSettings((items) => {
-        syncEnvUi(items);
-        applyActiveState(items.isActive);
+    readSyncSettings((settings) => {
+        syncEnvUi(settings);
+        applyActiveState(settings.isActive);
+
+        // Check server status
+        checkServerStatus(settings.replace).then(isRunning => {
+            const statusEl = document.getElementById('server-status');
+            if (statusEl && !isRunning) {
+                statusEl.textContent = 'Local server is not running.';
+                statusEl.className = 'server-status-error';
+            }
+        });
     });
 
     const envSelect = document.getElementById('env-select');
@@ -71,11 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (idx === CUSTOM_ENV_INDEX) {
             // Show custom input
-            chrome.storage.sync.get(['customUrl'], (items) => {
-                const customUrl = items.customUrl || '';
+            chrome.storage.sync.get(['customUrl'], (settings) => {
+                const customUrl = settings.customUrl || '';
                 chrome.storage.sync.set({ environmentIndex: idx, match: customUrl }, () => {
-                    readSyncSettings((items) => {
-                        syncEnvUi(items);
+                    readSyncSettings((settings) => {
+                        syncEnvUi(settings);
                     });
                 });
             });
@@ -83,8 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = MATCH_ENVIRONMENTS[idx];
             if (!row) return;
             chrome.storage.sync.set({ environmentIndex: idx, match: row.match }, () => {
-                readSyncSettings((items) => {
-                    syncEnvUi(items);
+                readSyncSettings((settings) => {
+                    syncEnvUi(settings);
                 });
             });
         }
@@ -94,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
     customInput.addEventListener('input', (e) => {
         const customUrl = e.target.value.trim();
         chrome.storage.sync.set({ customUrl, match: customUrl }, () => {
-            readSyncSettings((items) => {
-                syncEnvUi(items);
+            readSyncSettings((settings) => {
+                syncEnvUi(settings);
             });
         });
     });
@@ -107,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 applyActiveState(changes.isActive.newValue);
             }
             if (changes.environmentIndex || changes.match || changes.replace || changes.customUrl) {
-                chrome.storage.sync.get(null, (items) => {
-                    syncEnvUi({ ...POPUP_DEFAULTS, ...items });
+                chrome.storage.sync.get(null, (settings) => {
+                    syncEnvUi({ ...POPUP_DEFAULTS, ...settings });
                 });
             }
         }
