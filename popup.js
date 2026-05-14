@@ -137,14 +137,27 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('toggle-switch').addEventListener('change', (e) => {
         chrome.storage.sync.set({ isActive: e.target.checked });
     });
+
+    document.getElementById('settings-button').addEventListener('click', () => {
+        chrome.runtime.openOptionsPage();
+    });
 });
 
 function applyActiveState(isActive) {
     const heading = document.querySelector('.js-heading');
     const toggle = document.getElementById('toggle-switch');
+    const headerContainer = document.getElementById('header-container');
 
     heading.toggleAttribute('data-active', isActive);
     heading.textContent = isActive ? '▶️ Redwood is running' : '⏹️ Redwood is paused';
+
+    if (isActive) {
+        headerContainer.classList.remove('bg-gray-dark2');
+        headerContainer.classList.add('bg-green-dark2');
+    } else {
+        headerContainer.classList.remove('bg-green-dark2');
+        headerContainer.classList.add('bg-gray-dark2');
+    }
 
     toggle.checked = isActive;
 }
