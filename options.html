@@ -4,32 +4,29 @@
     <meta charset="utf-8">
     <title>redwood</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="options.js"></script>
+    <script type="module" src="options.js"></script>
 </head>
 <body class="p-300 font-body text-light-text-primary bg-light-background-primary">
-    <main>
-        <label class="flex items-center mb-150">
-            <span class="inline-block font-semibold text-small min-w-[120px] pr-300 text-right">Match URL prefix</span>
-            <input class="w-[210px] px-200 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="match">
+    <main class="w-[500px]">
+        <p class="m-0 mb-600 text-base text-light-text-primary opacity-80">CDN environment is chosen from the toolbar popup.</p>
+        <label class="flex items-center mb-300">
+            <span class="inline-block font-semibold text-base w-[180px] mr-[40px]">Replace URL prefix</span>
+            <input class="w-[300px] px-300 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="replace">
         </label>
-        <label class="flex items-center mb-150">
-            <span class="inline-block font-semibold text-small min-w-[120px] pr-300 text-right">Replace URL prefix</span>
-            <input class="w-[210px] px-200 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="replace">
+        <label class="flex items-center mb-300">
+            <span class="inline-block font-semibold text-base w-[180px] mr-[40px]">Webpack Dev Server?</span>
+            <input class="w-[300px] px-300 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="wds">
         </label>
-        <label class="flex items-center mb-150">
-            <span class="inline-block font-semibold text-small min-w-[120px] pr-300 text-right">Webpack Dev Server?</span>
-            <input name="wds">
+        <label class="flex items-center mb-300">
+            <span class="inline-block font-semibold text-base w-[180px] mr-[40px]">Web Server Port (if using wds)</span>
+            <input class="w-[300px] px-300 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="webServerPort">
         </label>
-        <label class="flex items-center mb-150">
-            <span class="inline-block font-semibold text-small min-w-[120px] pr-300 text-right">Web Server Port (if using wds)</span>
-            <input class="w-[210px] px-200 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="webServerPort">
-        </label>
-        <label class="flex items-center mb-150">
-            <span class="inline-block font-semibold text-small min-w-[120px] pr-300 text-right">Compressed?</span>
-            <input name="compressed">
+        <label class="flex items-center mb-300">
+            <span class="inline-block font-semibold text-base w-[180px] mr-[40px]">Compressed?</span>
+            <input class="w-[300px] px-300 py-100 text-base rounded-100 border border-light-border-primary bg-light-background-primary text-light-text-primary" name="compressed">
         </label>
         <footer class="mt-600 text-center">
-            <button class="cursor-pointer px-400 py-100 text-small rounded-100 bg-blue-base text-white hover:bg-blue-dark1" name="save">Save</button>
+            <button class="cursor-pointer px-[32px] py-[12px] text-base rounded-100 text-white hover:bg-green-dark2" style="background-color: #00684a" name="save">Save</button>
         </footer>
     </main>
 </body>

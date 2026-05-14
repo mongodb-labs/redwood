@@ -1,5 +1,8 @@
+import { MATCH_ENVIRONMENTS, DEFAULT_ENVIRONMENT } from './matchEnvironments.js';
+
 const DEFAULTS = {
-  match: "https://my-source.com",
+  match: DEFAULT_ENVIRONMENT.match,
+  environmentIndex: 0,
   replace: "http://localhost:8080",
   wds: true,
   webServerPort: 8080,
@@ -7,7 +10,22 @@ const DEFAULTS = {
   isActive: true,
 };
 
-async function updateRules(settings) {
+function resolveEnvironmentMatch(settings) {
+  let idx = Number(settings.environmentIndex);
+
+  // Handle custom URL case (idx = -1)
+  if (idx === -1) {
+    const match = settings.customUrl || settings.match || MATCH_ENVIRONMENTS[0].match;
+    return { ...settings, environmentIndex: idx, match };
+  }
+
+  if (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length) idx = 0;
+  const match = MATCH_ENVIRONMENTS[idx].match;
+  return { ...settings, environmentIndex: idx, match };
+}
+
+async function updateRules(rawSettings) {
+  const settings = resolveEnvironmentMatch(rawSettings);
   const { match, replace, wds, webServerPort, compressed, isActive } = settings;
 
   const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
@@ -32,11 +50,10 @@ async function updateRules(settings) {
   const isWDS = wds === "true";
   const isCompressed = compressed === "true";
   const matchForRegex = match.replaceAll(/\./g, '\\.');
-  const likelyWebServerURLForRegex = likelyWebServerURL.replaceAll(/\./g, '\\.');
 
   const genRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([^/]*)\\.[a-fA-F0-9]+\\..*$`;
-  const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\.[a-fA-F0-9]+\\..*$`;
-  const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/(.*)\\..*$`;
+  const appAssetRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/([^/]+)\\.[a-fA-F0-9]+\\..*$`;
+  const appAssetNoHashRegex = `^${matchForRegex}.*\/static\/([a-z]+)\/([a-z]+)\/([^/]+)\\..*$`;
 
   const addMin = () => isCompressed ? '.min' : '';
   const selectURLForRegexSub = (type) => (isWDS && type === 'css') ? likelyWebServerURL : replace;
@@ -94,8 +111,8 @@ async function updateRules(settings) {
   });
 }
 
-chrome.storage.sync.get(DEFAULTS).then(updateRules);
+chrome.storage.sync.get(null).then((settings) => updateRules({ ...DEFAULTS, ...settings }));
 
 chrome.storage.onChanged.addListener(() => {
-  chrome.storage.sync.get(DEFAULTS).then(updateRules);
+  chrome.storage.sync.get(null).then((settings) => updateRules({ ...DEFAULTS, ...settings }));
 });
