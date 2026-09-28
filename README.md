@@ -10,3 +10,10 @@ Redirect network requests for assets to test production services with local chan
 
 ## Attribution
 Originally forked from https://github.com/jjgonecrypto/chrome-envious (MIT LICENSE)
+
+## CSP headers
+While Redwood is active, it also strips `Content-Security-Policy` and
+`Content-Security-Policy-Report-Only` headers from page responses. Scripts served
+by the local Rspack dev server rely on `eval`, which would otherwise violate the
+CSP emitted by remote environments (e.g. cloud-dev) and flood Sentry with
+violation reports.
