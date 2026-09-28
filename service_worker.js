@@ -13,11 +13,13 @@ const DEFAULTS = {
 function resolveEnvironmentMatch(settings) {
   let idx = Number(settings.environmentIndex);
 
-  // Handle custom URL case (idx = -1): the text input serves as both the
-  // asset match and the app server whose CSP headers we strip.
+  // Handle custom URL case (idx = -1): the asset match comes from the custom
+  // URL text input, and the app server whose CSP headers we strip from the
+  // custom app URL input (falling back to the asset match if unset).
   if (idx === -1) {
     const match = settings.customUrl || settings.match || MATCH_ENVIRONMENTS[0].match;
-    return { ...settings, environmentIndex: idx, match, appServer: match };
+    const appServer = settings.customAppUrl || match;
+    return { ...settings, environmentIndex: idx, match, appServer };
   }
 
   if (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length) idx = 0;

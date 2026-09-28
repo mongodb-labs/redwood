@@ -8,6 +8,7 @@ const POPUP_DEFAULTS = {
     environmentIndex: 0,
     isActive: true,
     customUrl: '',
+    customAppUrl: '',
 };
 
 function syncEnvUi(settings) {
@@ -35,7 +36,7 @@ function syncEnvUi(settings) {
 
     sel.value = String(idx);
 
-    // Show/hide custom URL input
+    // Show/hide custom URL inputs
     const customContainer = document.getElementById('custom-url-container');
     const customInput = document.getElementById('custom-url-input');
     if (isCustom) {
@@ -45,12 +46,27 @@ function syncEnvUi(settings) {
         customContainer.classList.add('hidden');
     }
 
+    const customAppContainer = document.getElementById('custom-app-url-container');
+    const customAppInput = document.getElementById('custom-app-url-input');
+    if (isCustom) {
+        customAppContainer.classList.remove('hidden');
+        customAppInput.value = settings.customAppUrl || '';
+    } else {
+        customAppContainer.classList.add('hidden');
+    }
+
     const matchEl = document.querySelector('var.js-match');
     const replaceEl = document.querySelector('var.js-replace');
     if (matchEl) {
         matchEl.textContent = isCustom ? settings.customUrl : MATCH_ENVIRONMENTS[idx].match;
     }
     if (replaceEl) replaceEl.textContent = settings.replace;
+    const appServerEl = document.querySelector('var.js-app-server');
+    if (appServerEl) {
+        appServerEl.textContent = isCustom
+            ? (settings.customAppUrl || settings.customUrl)
+            : MATCH_ENVIRONMENTS[idx].appServer;
+    }
 }
 
 function readSyncSettings(callback) {
@@ -120,13 +136,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const customAppInput = document.getElementById('custom-app-url-input');
+    customAppInput.addEventListener('input', (e) => {
+        const customAppUrl = e.target.value.trim();
+        chrome.storage.sync.set({ customAppUrl }, () => {
+            readSyncSettings((settings) => {
+                syncEnvUi(settings);
+            });
+        });
+    });
+
     chrome.storage.onChanged.addListener(function (changes, areaName) {
         if (areaName === 'sync') {
             // changes.isActive is a StorageChange object ({oldValue, newValue}), or absent (undefined) if isActive didn't change
             if (changes.isActive) {
                 applyActiveState(changes.isActive.newValue);
             }
-            if (changes.environmentIndex || changes.match || changes.replace || changes.customUrl) {
+            if (changes.environmentIndex || changes.match || changes.replace || changes.customUrl || changes.customAppUrl) {
                 chrome.storage.sync.get(null, (settings) => {
                     syncEnvUi({ ...POPUP_DEFAULTS, ...settings });
                 });
