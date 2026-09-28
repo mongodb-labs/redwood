@@ -98,6 +98,21 @@ async function updateRules(rawSettings) {
           resourceTypes: ["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", "webtransport", "webbundle", "other"],
         },
       },
+      {
+        // The CSP header comes from the app server's HTML document (e.g. cloud-dev),
+        // not from the local dev server. Scripts served by the local Rspack dev server
+        // rely on `eval`, which violates that policy and floods Sentry with violation
+        // reports. Strip it from frames while Redwood is active.
+        id: 6,
+        action: {
+          type: "modifyHeaders",
+          responseHeaders: [
+            { header: "Content-Security-Policy", operation: "remove" },
+            { header: "Content-Security-Policy-Report-Only", operation: "remove" },
+          ],
+        },
+        condition: { resourceTypes: ["main_frame", "sub_frame"] },
+      },
     ],
   });
 
