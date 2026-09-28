@@ -13,20 +13,21 @@ const DEFAULTS = {
 function resolveEnvironmentMatch(settings) {
   let idx = Number(settings.environmentIndex);
 
-  // Handle custom URL case (idx = -1)
+  // Handle custom URL case (idx = -1): the text input serves as both the
+  // asset match and the app server whose CSP headers we strip.
   if (idx === -1) {
     const match = settings.customUrl || settings.match || MATCH_ENVIRONMENTS[0].match;
-    return { ...settings, environmentIndex: idx, match };
+    return { ...settings, environmentIndex: idx, match, appServer: match };
   }
 
   if (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length) idx = 0;
-  const match = MATCH_ENVIRONMENTS[idx].match;
-  return { ...settings, environmentIndex: idx, match };
+  const { match, appServer } = MATCH_ENVIRONMENTS[idx];
+  return { ...settings, environmentIndex: idx, match, appServer };
 }
 
 async function updateRules(rawSettings) {
   const settings = resolveEnvironmentMatch(rawSettings);
-  const { match, replace, wds, webServerPort, compressed, isActive } = settings;
+  const { match, appServer, replace, wds, webServerPort, compressed, isActive } = settings;
 
   const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
   const oldRuleIds = oldRules.map((rule) => rule.id);
@@ -102,7 +103,8 @@ async function updateRules(rawSettings) {
         // The CSP header comes from the app server's HTML document (e.g. cloud-dev),
         // not from the local dev server. Scripts served by the local Rspack dev server
         // rely on `eval`, which violates that policy and floods Sentry with violation
-        // reports. Strip it from frames while Redwood is active.
+        // reports. Strip it from frames served by the selected environment's app
+        // server while Redwood is active.
         id: 6,
         action: {
           type: "modifyHeaders",
@@ -111,7 +113,7 @@ async function updateRules(rawSettings) {
             { header: "Content-Security-Policy-Report-Only", operation: "remove" },
           ],
         },
-        condition: { resourceTypes: ["main_frame", "sub_frame"] },
+        condition: { urlFilter: appServer, resourceTypes: ["main_frame", "sub_frame"] },
       },
     ],
   });
