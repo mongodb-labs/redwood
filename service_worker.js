@@ -13,20 +13,23 @@ const DEFAULTS = {
 function resolveEnvironmentMatch(settings) {
   let idx = Number(settings.environmentIndex);
 
-  // Handle custom URL case (idx = -1)
+  // Handle custom URL case (idx = -1): the asset match comes from the custom
+  // URL text input, and the app server whose CSP headers we strip from the
+  // custom app URL input (falling back to the asset match if unset).
   if (idx === -1) {
     const match = settings.customUrl || settings.match || MATCH_ENVIRONMENTS[0].match;
-    return { ...settings, environmentIndex: idx, match };
+    const appServer = settings.customAppUrl || match;
+    return { ...settings, environmentIndex: idx, match, appServer };
   }
 
   if (!Number.isFinite(idx) || idx < 0 || idx >= MATCH_ENVIRONMENTS.length) idx = 0;
-  const match = MATCH_ENVIRONMENTS[idx].match;
-  return { ...settings, environmentIndex: idx, match };
+  const { match, appServer } = MATCH_ENVIRONMENTS[idx];
+  return { ...settings, environmentIndex: idx, match, appServer };
 }
 
 async function updateRules(rawSettings) {
   const settings = resolveEnvironmentMatch(rawSettings);
-  const { match, replace, wds, webServerPort, compressed, isActive } = settings;
+  const { match, appServer, replace, wds, webServerPort, compressed, isActive } = settings;
 
   const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
   const oldRuleIds = oldRules.map((rule) => rule.id);
@@ -97,6 +100,22 @@ async function updateRules(rawSettings) {
           urlFilter: isWDS ? likelyWebServerURL : replace,
           resourceTypes: ["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", "webtransport", "webbundle", "other"],
         },
+      },
+      {
+        // The CSP header comes from the app server's HTML document (e.g. cloud-dev),
+        // not from the local dev server. Scripts served by the local Rspack dev server
+        // rely on `eval`, which violates that policy and floods Sentry with violation
+        // reports. Strip it from frames served by the selected environment's app
+        // server while Redwood is active.
+        id: 6,
+        action: {
+          type: "modifyHeaders",
+          responseHeaders: [
+            { header: "Content-Security-Policy", operation: "remove" },
+            { header: "Content-Security-Policy-Report-Only", operation: "remove" },
+          ],
+        },
+        condition: { urlFilter: appServer, resourceTypes: ["main_frame", "sub_frame"] },
       },
     ],
   });

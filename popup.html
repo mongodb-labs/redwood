@@ -29,11 +29,16 @@
                 <span class="popup-label">Custom URL</span>
                 <input type="text" id="custom-url-input" placeholder="https://assets.example.com/mms" class="w-[300px] px-200 py-100 rounded-100 font-monospace text-dark-text-primary bg-gray-dark2 border border-gray-dark1" />
             </div>
+            <div class="popup-row hidden" id="custom-app-url-container">
+                <span class="popup-label">Custom App URL</span>
+                <input type="text" id="custom-app-url-input" placeholder="https://cloud.example.com" class="w-[300px] px-200 py-100 rounded-100 font-monospace text-dark-text-primary bg-gray-dark2 border border-gray-dark1" />
+            </div>
 
             <hr class="divider"/>
 
             <p class="text-dark-text-primary">Matching requests from <br /><var class="js-match font-monospace text-small text-dark-text-primary"></var></p>
             <p class="text-dark-text-primary" style="margin-top: 8px;">and replacing with <br /><var class="js-replace font-monospace text-small text-dark-text-primary"></var></p>
+            <p class="text-dark-text-primary" style="margin-top: 8px;">and stripping CSP headers from <br /><var class="js-app-server font-monospace text-small text-dark-text-primary"></var></p>
 
             <hr class="divider hidden" id="server-status-divider"/>
             <p id="popup-server-status" class="popup-text"></p>
